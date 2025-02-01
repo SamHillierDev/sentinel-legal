@@ -1,50 +1,48 @@
-# React + TypeScript + Vite
+# Sentinel Legal
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+<div align="center">
+  <img src="https://github.com/SamHillierDev/sentinel-legal/blob/main/src/assets/images/sentinel-legal.png?raw=true" alt="Sentinel Legal" width="400">
+</div>
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Sentinel is a law firm focused on hidden commissions and unjustifiably high rates, especially in Car Finance (PCP) and Business Energy Claims.
 
-## Expanding the ESLint configuration
+## Requirements
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+Make sure you have Node and NPM installed:
 
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```bash
+node -v
+# v22.12.0
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+```bash
+npm -v
+# 11.0.0
 ```
+
+## Installation
+
+Run the commands:
+
+```bash
+npm install
+```
+
+```bash
+npm run dev
+```
+
+## Security Vulnerabilities
+
+Please review our [security policy](https://github.com/SamHillierDev/sentinel-legal/security/policy) on how to report security vulnerabilities.
+
+## Credits
+
+- [Sentinel Legal](https://sentinellegal.co.uk)
+- [All Contributors](https://github.com/SamHillierDev/sentinel-legal/contributors)
+
+## License
+
+Please see [License File](https://github.com/SamHillierDev/sentinel-legal/blob/main/LICENSE) for more information.
