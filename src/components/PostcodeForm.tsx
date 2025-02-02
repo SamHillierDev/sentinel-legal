@@ -89,6 +89,7 @@ const PostcodeForm: React.FC<PostcodeFormProps> = ({
             validate={validatePostcode}
             icon={<FaMapMarkerAlt />}
             maxLength={8}
+            className={`rounded-r-none`}
           />
           <SearchButton />
         </div>

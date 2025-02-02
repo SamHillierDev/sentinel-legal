@@ -53,7 +53,7 @@ const TextInput: React.FC<TextInputProps> = ({
         onChange={handleChange}
         onBlur={handleBlur}
         maxLength={maxLength}
-        className={`w-full rounded-lg border py-3 pr-3 transition ${
+        className={`w-full rounded-lg border py-3 pr-3 transition ${className} ${
           icon ? "pl-10" : "pl-3"
         } shadow-inner shadow-gray-400 focus:outline-none ${
           touched && !isValid
