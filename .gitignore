@@ -25,3 +25,9 @@ dist-ssr
 
 # Environment Variables
 .env
+
+# Testing
+playwright-report/
+test-results/
+trace.zip
+*.log

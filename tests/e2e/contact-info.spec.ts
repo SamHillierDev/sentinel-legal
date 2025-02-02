@@ -1,0 +1,57 @@
+import { test, expect } from "@playwright/test";
+
+test.describe("Contact Information Success Validation", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto("http://localhost:5173/sentinel-legal/");
+
+    await page.fill('input[placeholder="Enter postcode"]', "SW1A 1AA");
+    await page.click('button:has-text("Search")');
+    await page.waitForSelector("select#address", { timeout: 10000 });
+    await page.selectOption("select#address", { index: 1 });
+    await page.click('button:has-text("Find my agreements")');
+    await page.fill('input[placeholder="First name"]', "John");
+    await page.fill('input[placeholder="Last name"]', "Doe");
+    await page.fill('input[type="date"]', "1990-05-15");
+    await page.click('button:has-text("Next")');
+
+    await expect(
+      page.locator('h2:has-text("Contact Information")'),
+    ).toBeVisible();
+  });
+
+  test("should validate contact information fields and determine success", async ({
+    page,
+  }) => {
+    await page.click('button:has-text("Next")');
+
+    const phoneNumberError = page.locator("text=Enter a valid phone number.");
+    const emailError = page.locator("text=Enter a valid email address.");
+
+    if (
+      (await phoneNumberError.isVisible()) ||
+      (await emailError.isVisible())
+    ) {
+      console.log(
+        "Validation errors detected, staying on Contact Information page.",
+      );
+
+      await expect(phoneNumberError).toBeVisible();
+      await expect(emailError).toBeVisible();
+
+      await page.fill('input[placeholder="Phone number"]', "123456");
+      await page.fill('input[placeholder="Email address"]', "invalid-email");
+      await page.click('button:has-text("Next")');
+
+      await expect(phoneNumberError).toBeVisible();
+      await expect(emailError).toBeVisible();
+
+      await page.fill('input[placeholder="Phone number"]', "07123456789");
+      await page.fill('input[placeholder="Email address"]', "john@example.com");
+
+      await page.click('button:has-text("Next")');
+    }
+
+    await expect(page.locator('h2:has-text("Your signature")')).toBeVisible();
+    console.log("Successfully navigated to Signature step.");
+  });
+});
