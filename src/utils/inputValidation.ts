@@ -1,6 +1,6 @@
 export const postcodeRegex = /^[A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}$/i;
 export const nameRegex = /^[A-Za-z]+(?: [A-Za-z]+)*$/;
-export const phoneNumberRegex = /^(?:\+44\d{10}|07\d{9})$/;
+export const phoneNumberRegex = /^(?:\+44\d{10}|07\d{9}|7\d{9})$/;
 export const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export const validatePostcode = (postcode: string): boolean => {
