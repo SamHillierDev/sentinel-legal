@@ -22,7 +22,7 @@ test.describe("Personal Details Success Validation", () => {
 
     const firstNameError = page.locator("text=First name is required");
     const lastNameError = page.locator("text=Last name is required");
-    const dobError = page.locator("text=You must be at least 18 years old");
+    const dobError = page.locator("text=You must be between 18 and 100 years old");
 
     if (
       (await firstNameError.isVisible()) ||

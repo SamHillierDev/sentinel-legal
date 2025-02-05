@@ -58,7 +58,7 @@ const PersonalDetailsForm: React.FC<PersonalDetailsProps> = ({
   const handleDobChange = (value: string) => {
     setDob(value);
     if (!validateDob(value)) {
-      setDobError("You must be at least 18 years old.");
+      setDobError("You must be between 18 and 100 years old.");
     } else {
       setDobError("");
     }
@@ -81,7 +81,7 @@ const PersonalDetailsForm: React.FC<PersonalDetailsProps> = ({
         ? ""
         : "Last name is required and must contain only letters.",
     );
-    setDobError(isDobValid ? "" : "You must be at least 18 years old.");
+    setDobError(isDobValid ? "" : "You must be between 18 and 100 years old.");
 
     if (isFirstNameValid && isLastNameValid && isDobValid) {
       updateUser.mutate(

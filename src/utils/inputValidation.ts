@@ -24,7 +24,7 @@ export const validateDob = (dob: string): boolean => {
     age--;
   }
 
-  return age >= 18;
+  return age >= 18 && age <= 100;
 };
 
 export const validatePhoneNumber = (phoneNumber: string): boolean => {
