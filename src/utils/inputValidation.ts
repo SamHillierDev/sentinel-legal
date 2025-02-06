@@ -1,5 +1,6 @@
 export const postcodeRegex = /^[A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}$/i;
 export const nameRegex = /^[A-Za-z]+(?: [A-Za-z]+)*$/;
+export const MAX_NAME_LENGTH = 50;
 export const phoneNumberRegex = /^(?:\+44\d{10}|07\d{9}|7\d{9})$/;
 export const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -8,7 +9,12 @@ export const validatePostcode = (postcode: string): boolean => {
 };
 
 export const validateName = (name: string): boolean => {
-  return name.trim().length > 0 && nameRegex.test(name.trim());
+  const trimmedName = name.trim();
+  return (
+    trimmedName.length > 0 &&
+    trimmedName.length <= MAX_NAME_LENGTH &&
+    nameRegex.test(trimmedName)
+  );
 };
 
 export const validateDob = (dob: string): boolean => {

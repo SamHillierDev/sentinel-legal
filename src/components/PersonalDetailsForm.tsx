@@ -2,7 +2,11 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { FiArrowLeft, FiArrowRight, FiUser } from "react-icons/fi";
 import { useUpdateUser } from "../hooks/useUpdateUser";
-import { validateDob, validateName } from "../utils/inputValidation";
+import {
+  MAX_NAME_LENGTH,
+  validateDob,
+  validateName,
+} from "../utils/inputValidation";
 import SelectInput from "./SelectInput";
 import TextInput from "./TextInput";
 
@@ -32,30 +36,32 @@ const PersonalDetailsForm: React.FC<PersonalDetailsProps> = ({
   onNext,
 }) => {
   const updateUser = useUpdateUser();
-  const [firstNameError, setFirstNameError] = useState("");
-  const [lastNameError, setLastNameError] = useState("");
+  const [nameErrors, setNameErrors] = useState<{
+    firstName: string;
+    lastName: string;
+  }>({
+    firstName: "",
+    lastName: "",
+  });
   const [dobError, setDobError] = useState("");
   const [dobTouched, setDobTouched] = useState(false);
   const [dobIsValid, setDobIsValid] = useState(true);
 
-  const handleFirstNameChange = (value: string) => {
-    setFirstName(value);
-    if (!validateName(value)) {
-      setFirstNameError(
-        "First name is required and must contain only letters.",
-      );
-    } else {
-      setFirstNameError("");
-    }
-  };
+  const handleNameChange = (
+    nameType: "firstName" | "lastName",
+    value: string,
+    setter: (value: string) => void,
+  ) => {
+    setter(value);
+    let error = "";
 
-  const handleLastNameChange = (value: string) => {
-    setLastName(value);
-    if (!validateName(value)) {
-      setLastNameError("Last name is required and must contain only letters.");
-    } else {
-      setLastNameError("");
+    if (value.length > MAX_NAME_LENGTH) {
+      error = `${nameType === "firstName" ? "First" : "Last"} name must be ${MAX_NAME_LENGTH} characters or fewer.`;
+    } else if (!validateName(value)) {
+      error = `${nameType === "firstName" ? "First" : "Last"} name is required and must contain only letters.`;
     }
+
+    setNameErrors((prevErrors) => ({ ...prevErrors, [nameType]: error }));
   };
 
   const handleDobChange = (value: string) => {
@@ -69,9 +75,7 @@ const PersonalDetailsForm: React.FC<PersonalDetailsProps> = ({
 
   const handleDobBlur = () => {
     setDobTouched(true);
-    if (validateDob) {
-      setDobIsValid(validateDob(dob));
-    }
+    setDobIsValid(validateDob(dob));
   };
 
   const validateForm = (e: React.FormEvent) => {
@@ -81,16 +85,19 @@ const PersonalDetailsForm: React.FC<PersonalDetailsProps> = ({
     const isLastNameValid = validateName(lastName);
     const isDobValid = validateDob(dob);
 
-    setFirstNameError(
-      isFirstNameValid
-        ? ""
-        : "First name is required and must contain only letters.",
-    );
-    setLastNameError(
-      isLastNameValid
-        ? ""
-        : "Last name is required and must contain only letters.",
-    );
+    setNameErrors((prevErrors) => ({
+      firstName: prevErrors.firstName.includes("characters or fewer")
+        ? prevErrors.firstName
+        : isFirstNameValid
+          ? ""
+          : "First name is required and must contain only letters.",
+      lastName: prevErrors.lastName.includes("characters or fewer")
+        ? prevErrors.lastName
+        : isLastNameValid
+          ? ""
+          : "Last name is required and must contain only letters.",
+    }));
+
     setDobError(isDobValid ? "" : "You must be between 18 and 100 years old.");
 
     if (isFirstNameValid && isLastNameValid && isDobValid) {
@@ -116,37 +123,33 @@ const PersonalDetailsForm: React.FC<PersonalDetailsProps> = ({
         />
 
         <div className="flex gap-4">
-          <div className="flex-1">
-            <label className="text-sm font-medium text-gray-600">
-              First Name
-            </label>
-            <TextInput
-              value={firstName}
-              setValue={handleFirstNameChange}
-              placeholder="First name"
-              validate={validateName}
-              icon={<FiUser />}
-            />
-            {firstNameError && (
-              <p className="mt-1 text-sm text-red-500">{firstNameError}</p>
-            )}
-          </div>
-
-          <div className="flex-1">
-            <label className="text-sm font-medium text-gray-600">
-              Last Name
-            </label>
-            <TextInput
-              value={lastName}
-              setValue={handleLastNameChange}
-              placeholder="Last name"
-              validate={validateName}
-              icon={<FiUser />}
-            />
-            {lastNameError && (
-              <p className="mt-1 text-sm text-red-500">{lastNameError}</p>
-            )}
-          </div>
+          {["firstName", "lastName"].map((nameType) => (
+            <div key={nameType} className="flex-1">
+              <label className="text-sm font-medium text-gray-600">
+                {nameType === "firstName" ? "First Name" : "Last Name"}
+              </label>
+              <TextInput
+                value={nameType === "firstName" ? firstName : lastName}
+                setValue={(value) =>
+                  handleNameChange(
+                    nameType as "firstName" | "lastName",
+                    value,
+                    nameType === "firstName" ? setFirstName : setLastName,
+                  )
+                }
+                placeholder={
+                  nameType === "firstName" ? "First name" : "Last name"
+                }
+                validate={validateName}
+                icon={<FiUser />}
+              />
+              {nameErrors[nameType as "firstName" | "lastName"] && (
+                <p className="mt-1 text-sm text-red-500">
+                  {nameErrors[nameType as "firstName" | "lastName"]}
+                </p>
+              )}
+            </div>
+          ))}
         </div>
 
         <div>
