@@ -11,8 +11,8 @@ test.describe("Postcode Success Validation", () => {
     await page.fill('input[placeholder="Enter postcode"]', "SW1A 1AA");
     await page.click('button:has-text("Search")');
 
-    const addressDropdown = page.locator("select#address");
-    await addressDropdown.waitFor({ timeout: 10000 });
+    const addressDropdown = page.locator("select");
+    await addressDropdown.waitFor({ state: "visible", timeout: 10000 });
 
     const addressOptions = await addressDropdown
       .locator("option")

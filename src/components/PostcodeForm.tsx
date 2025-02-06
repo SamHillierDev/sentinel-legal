@@ -4,7 +4,7 @@ import { FaMapMarkerAlt } from "react-icons/fa";
 import { useFetchPostcode } from "../hooks/useFetchPostcode";
 import { useUpdateUser } from "../hooks/useUpdateUser";
 import { validatePostcode } from "../utils/inputValidation";
-import AddressDropdown from "./AddressDropdown";
+import AddressSelectInput from "./AddressSelectInput";
 import SearchButton from "./SearchButton";
 import SelectedAddressDisplay from "./SelectedAddressDisplay";
 import TextInput from "./TextInput";
@@ -108,7 +108,7 @@ const PostcodeForm: React.FC<PostcodeFormProps> = ({
             exit={{ y: -20, opacity: 0 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
           >
-            <AddressDropdown
+            <AddressSelectInput
               addresses={addresses}
               selectedAddress={selectedAddress}
               setSelectedAddress={setSelectedAddress}

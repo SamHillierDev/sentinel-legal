@@ -6,8 +6,9 @@ test.describe("Personal Details Success Validation", () => {
 
     await page.fill('input[placeholder="Enter postcode"]', "SW1A 1AA");
     await page.click('button:has-text("Search")');
-    await page.waitForSelector("select#address", { timeout: 10000 });
-    await page.selectOption("select#address", { index: 1 });
+    const addressDropdown = page.locator("select");
+    await addressDropdown.waitFor({ state: "visible", timeout: 10000 });
+    await addressDropdown.selectOption({ index: 1 });
     await page.click('button:has-text("Find my agreements")');
 
     await expect(
@@ -22,7 +23,9 @@ test.describe("Personal Details Success Validation", () => {
 
     const firstNameError = page.locator("text=First name is required");
     const lastNameError = page.locator("text=Last name is required");
-    const dobError = page.locator("text=You must be between 18 and 100 years old");
+    const dobError = page.locator(
+      "text=You must be between 18 and 100 years old",
+    );
 
     if (
       (await firstNameError.isVisible()) ||
@@ -40,9 +43,10 @@ test.describe("Personal Details Success Validation", () => {
       await page.fill('input[placeholder="First name"]', "John");
       await page.fill('input[placeholder="Last name"]', "Doe");
       await page.fill('input[type="date"]', "2010-01-01");
-      await page.click('button:has-text("Next")');
 
+      await page.click('button:has-text("Next")');
       await expect(dobError).toBeVisible();
+
       await page.fill('input[type="date"]', "1990-05-15");
 
       await page.click('button:has-text("Next")');

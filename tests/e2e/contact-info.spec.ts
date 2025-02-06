@@ -6,8 +6,9 @@ test.describe("Contact Information Success Validation", () => {
 
     await page.fill('input[placeholder="Enter postcode"]', "SW1A 1AA");
     await page.click('button:has-text("Search")');
-    await page.waitForSelector("select#address", { timeout: 10000 });
-    await page.selectOption("select#address", { index: 1 });
+    const addressDropdown = page.locator("select");
+    await addressDropdown.waitFor({ state: "visible", timeout: 10000 });
+    await addressDropdown.selectOption({ index: 1 });
     await page.click('button:has-text("Find my agreements")');
     await page.fill('input[placeholder="First name"]', "John");
     await page.fill('input[placeholder="Last name"]', "Doe");

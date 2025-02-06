@@ -1,8 +1,9 @@
+import { motion } from "framer-motion";
 import { useState } from "react";
-import { FaChevronDown } from "react-icons/fa";
 import { FiArrowLeft, FiArrowRight, FiUser } from "react-icons/fi";
 import { useUpdateUser } from "../hooks/useUpdateUser";
 import { validateDob, validateName } from "../utils/inputValidation";
+import SelectInput from "./SelectInput";
 import TextInput from "./TextInput";
 
 interface PersonalDetailsProps {
@@ -34,6 +35,8 @@ const PersonalDetailsForm: React.FC<PersonalDetailsProps> = ({
   const [firstNameError, setFirstNameError] = useState("");
   const [lastNameError, setLastNameError] = useState("");
   const [dobError, setDobError] = useState("");
+  const [dobTouched, setDobTouched] = useState(false);
+  const [dobIsValid, setDobIsValid] = useState(true);
 
   const handleFirstNameChange = (value: string) => {
     setFirstName(value);
@@ -61,6 +64,13 @@ const PersonalDetailsForm: React.FC<PersonalDetailsProps> = ({
       setDobError("You must be between 18 and 100 years old.");
     } else {
       setDobError("");
+    }
+  };
+
+  const handleDobBlur = () => {
+    setDobTouched(true);
+    if (validateDob) {
+      setDobIsValid(validateDob(dob));
     }
   };
 
@@ -98,22 +108,12 @@ const PersonalDetailsForm: React.FC<PersonalDetailsProps> = ({
       </h2>
 
       <form className="space-y-3" onSubmit={validateForm}>
-        <div className="relative mt-4">
-          <select
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="w-full appearance-none rounded-lg border border-gray-400 bg-white p-3 pr-10 focus:border-blue-400 focus:ring focus:outline-none"
-          >
-            <option disabled value="">
-              Select your title
-            </option>
-            <option value="Mr">Mr</option>
-            <option value="Mrs">Mrs</option>
-            <option value="Ms">Ms</option>
-            <option value="Dr">Dr</option>
-          </select>
-          <FaChevronDown className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-gray-500" />
-        </div>
+        <SelectInput
+          options={["Mr", "Mrs", "Ms", "Dr"]}
+          selectedValue={title}
+          setSelectedValue={setTitle}
+          placeholder="Select your title"
+        />
 
         <div className="flex gap-4">
           <div className="flex-1">
@@ -153,14 +153,23 @@ const PersonalDetailsForm: React.FC<PersonalDetailsProps> = ({
           <label className="text-sm font-medium text-gray-600">
             Date of Birth
           </label>
-          <input
-            type="date"
-            value={dob}
-            onChange={(e) => handleDobChange(e.target.value)}
-            className={`w-full rounded-lg border px-3 py-3 shadow-inner shadow-gray-400 focus:outline-none ${
-              dobError ? "border-red-500" : "border-gray-400"
-            }`}
-          />
+          <motion.div
+            className="relative"
+            animate={
+              dobTouched && !dobIsValid ? { x: [0, -5, 5, -5, 5, 0] } : {}
+            }
+            transition={{ duration: 0.3 }}
+          >
+            <input
+              type="date"
+              value={dob}
+              onChange={(e) => handleDobChange(e.target.value)}
+              onBlur={handleDobBlur}
+              className={`w-full rounded-lg border px-3 py-3 shadow-inner shadow-gray-400 focus:border-blue-400 focus:ring-0 focus:outline-none ${
+                dobTouched && !dobIsValid ? "border-red-500" : "border-gray-400"
+              }`}
+            />
+          </motion.div>
           {dobError && <p className="mt-1 text-sm text-red-500">{dobError}</p>}
         </div>
 
