@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
-import { FiCheckCircle } from "react-icons/fi";
 import ContactInformationForm from "./ContactInformationForm";
+import FormComplete from "./FormComplete";
 import FormHeader from "./FormHeader";
 import PersonalDetailsForm from "./PersonalDetailsForm";
 import PostcodeForm from "./PostcodeForm";
@@ -206,20 +206,7 @@ const MultiStepForm: React.FC = () => {
               custom={direction}
               className="text-center"
             >
-              <FiCheckCircle className="mx-auto text-6xl text-emerald-500" />
-              <h2 className="mt-4 text-lg font-semibold text-gray-700">
-                Thank you for submitting!
-              </h2>
-              <p className="text-sm text-gray-600">
-                Your information has been successfully recorded.
-              </p>
-
-              <button
-                onClick={resetForm}
-                className="mt-4 w-full cursor-pointer rounded-lg bg-gray-400 px-4 py-3 text-lg font-semibold text-white shadow-inner shadow-gray-300 transition hover:bg-gray-500"
-              >
-                Start New Form
-              </button>
+              <FormComplete onReset={resetForm} />
             </motion.div>
           )}
         </AnimatePresence>
