@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import ContactInformationForm from "./ContactInformationForm";
 import FormComplete from "./FormComplete";
@@ -7,6 +7,7 @@ import PersonalDetailsForm from "./PersonalDetailsForm";
 import PostcodeForm from "./PostcodeForm";
 import ProgressBar from "./ProgressBar";
 import SignatureForm from "./SignatureForm";
+import StepWrapper from "./StepWrapper";
 
 type Stage =
   | "address"
@@ -23,9 +24,22 @@ const stageFlow: Record<Stage, { next?: Stage; prev?: Stage }> = {
   success: { prev: "signature" },
 };
 
-const MultiStepForm: React.FC = () => {
+const useFormNavigation = () => {
   const [stage, setStage] = useState<Stage>("address");
   const [direction, setDirection] = useState<1 | -1>(1);
+
+  const changeStage = (nextStage?: Stage, moveForward: boolean = true) => {
+    if (nextStage) {
+      setDirection(moveForward ? 1 : -1);
+      setStage(nextStage);
+    }
+  };
+
+  return { stage, direction, changeStage };
+};
+
+const MultiStepForm: React.FC = () => {
+  const { stage, direction, changeStage } = useFormNavigation();
 
   const [postcode, setPostcode] = useState("");
   const [selectedAddress, setSelectedAddress] = useState("");
@@ -39,13 +53,6 @@ const MultiStepForm: React.FC = () => {
   const [email, setEmail] = useState("");
 
   const [signature, setSignature] = useState<string | null>(null);
-
-  const changeStage = (nextStage?: Stage, moveForward: boolean = true) => {
-    if (nextStage) {
-      setDirection(moveForward ? 1 : -1);
-      setStage(nextStage);
-    }
-  };
 
   const handleFormCompletion = () => {
     console.log("Form submitted successfully!", {
@@ -64,7 +71,6 @@ const MultiStepForm: React.FC = () => {
   };
 
   const resetForm = () => {
-    setStage("address");
     setPostcode("");
     setSelectedAddress("");
     setTitle("");
@@ -74,6 +80,7 @@ const MultiStepForm: React.FC = () => {
     setPhoneNumber("");
     setEmail("");
     setSignature(null);
+    changeStage("address");
   };
 
   const totalFields = 6;
@@ -87,39 +94,15 @@ const MultiStepForm: React.FC = () => {
   ].filter((field) => field.trim() !== "").length;
   const progress = (filledFields / totalFields) * 100;
 
-  const swipeVariants = {
-    initial: (direction: number) => ({
-      x: direction > 0 ? 100 : -100,
-      opacity: 0,
-    }),
-    animate: {
-      x: 0,
-      opacity: 1,
-      transition: { type: "spring", stiffness: 200, damping: 15 },
-    },
-    exit: (direction: number) => ({
-      x: direction > 0 ? -100 : 100,
-      opacity: 0,
-      transition: { type: "spring", stiffness: 200, damping: 15 },
-    }),
-  };
-
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100">
       <div className="w-96 rounded-lg bg-white p-6 shadow-md transition-all duration-300">
         <FormHeader />
         {stage !== "success" && <ProgressBar progress={progress} />}
 
-        <AnimatePresence custom={direction} mode="wait">
+        <AnimatePresence mode="wait" custom={direction}>
           {stage === "address" && (
-            <motion.div
-              key="address"
-              variants={swipeVariants}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              custom={direction}
-            >
+            <StepWrapper direction={direction} key="address">
               <PostcodeForm
                 postcode={postcode}
                 setPostcode={setPostcode}
@@ -127,18 +110,11 @@ const MultiStepForm: React.FC = () => {
                 setSelectedAddress={setSelectedAddress}
                 onNext={() => changeStage(stageFlow.address.next)}
               />
-            </motion.div>
+            </StepWrapper>
           )}
 
           {stage === "personalDetails" && (
-            <motion.div
-              key="personalDetails"
-              variants={swipeVariants}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              custom={direction}
-            >
+            <StepWrapper direction={direction} key="personalDetails">
               <PersonalDetailsForm
                 title={title}
                 setTitle={setTitle}
@@ -153,18 +129,11 @@ const MultiStepForm: React.FC = () => {
                 }
                 onNext={() => changeStage(stageFlow.personalDetails.next)}
               />
-            </motion.div>
+            </StepWrapper>
           )}
 
           {stage === "contactInformation" && (
-            <motion.div
-              key="contactInformation"
-              variants={swipeVariants}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              custom={direction}
-            >
+            <StepWrapper direction={direction} key="contactInformation">
               <ContactInformationForm
                 phoneNumber={phoneNumber}
                 setPhoneNumber={setPhoneNumber}
@@ -175,39 +144,24 @@ const MultiStepForm: React.FC = () => {
                 }
                 onNext={() => changeStage(stageFlow.contactInformation.next)}
               />
-            </motion.div>
+            </StepWrapper>
           )}
 
           {stage === "signature" && (
-            <motion.div
-              key="signature"
-              variants={swipeVariants}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              custom={direction}
-            >
+            <StepWrapper direction={direction} key="signature">
               <SignatureForm
                 signature={signature}
                 setSignature={setSignature}
                 onBack={() => changeStage(stageFlow.signature.prev, false)}
                 onSubmit={handleFormCompletion}
               />
-            </motion.div>
+            </StepWrapper>
           )}
 
           {stage === "success" && (
-            <motion.div
-              key="success"
-              variants={swipeVariants}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              custom={direction}
-              className="text-center"
-            >
+            <StepWrapper direction={direction} key="success">
               <FormComplete onReset={resetForm} />
-            </motion.div>
+            </StepWrapper>
           )}
         </AnimatePresence>
       </div>
