@@ -44,7 +44,7 @@ const SignatureForm: React.FC<SignatureFormProps> = ({
         <h2 className="text-lg font-semibold text-gray-700">Your signature</h2>
       </div>
       <p className="text-sm text-gray-600">
-        Please sign within the box using your finger, stylus, or mouse.
+        Please sign within the box using your finger or mouse.
       </p>
 
       <div className="mt-3 overflow-hidden rounded-lg border-2 border-gray-400">
@@ -66,6 +66,13 @@ const SignatureForm: React.FC<SignatureFormProps> = ({
           Reset Signature
         </button>
       </div>
+
+      <p className="mt-4 text-xs text-gray-500">
+        By signing above and clicking 'Find my agreement(s)', you agree that we
+        will run a soft credit check to identify any potential car finance
+        claims. These searches will not impact your credit score but will verify
+        any agreements that are found.
+      </p>
 
       <div className="mt-4 flex justify-between gap-2">
         <button
